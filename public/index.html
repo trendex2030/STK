@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trendex Professional Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root {
+            --primary: #6A1B9A;
+            --secondary: #6A1B9A;
+            --accent: #9C27B0;
+            --dark: #1E1E1E;
+            --light: #FFFFFF;
+            --gray: #B0BEC5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px 30px;
+            background: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        header img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            box-shadow: 0 0 20px rgba(106, 27, 154, 0.5);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--light);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        .price-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin: 10px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        section {
+            background: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            margin: 30px auto;
+            border-radius: 16px;
+            max-width: 850px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all .3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--light);
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(30, 30, 30, 0.6);
+            color: var(--light);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(10px);
+            margin-top: 50px;
+            color: var(--gray);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #loader {
+            display: none;
+            margin-top: 15px;
+            color: var(--gray);
+        }
+
+        .error {
+            color: #ef4444;
+            margin-top: 12px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <img src="https://files.catbox.moe/j2h8dg.jpg" alt="Trendex Tech" />
+            <h1>My Professional Tool</h1>
+            <p>Advanced automation solutions for your business</p>
+            <div class="price-tag">Only KES 100</div>
+        </header>
+
+        <section>
+            <h2>Place Your Order</h2>
+            <p>Get your customized WhatsApp bot today</p>
+            <div id="formSection">
+                <h2>Order Details</h2>
+                <form id="orderForm">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" placeholder="Enter your name" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Payment Phone Number (M-Pesa)</label>
+                        <input type="tel" id="phone" placeholder="e.g., 2547XXXXXXXX" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">Custom Notes or Request</label>
+                        <textarea id="notes" rows="4" placeholder="Any special requirements..."></textarea>
+                    </div>
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-check-circle"></i> Confirm & Pay
+                    </button>
+                    <div id="loader">Initializing payment...</div>
+                    <div class="error" id="errorMsg">Payment initialization failed. Please try again.</div>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 TRENDEX KING | All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('orderForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const loader = document.getElementById('loader');
+            const errorMsg = document.getElementById('errorMsg');
+
+            errorMsg.style.display = 'none';
+
+            if (!/^254\d{9}$/.test(phone)) {
+                errorMsg.textContent = 'Enter a valid phone number in format 2547XXXXXXXX';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            loader.style.display = 'block';
+
+            try {
+                const res = await fetch('/create-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, phone })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.checkoutUrl) {
+                    window.location.href = data.checkoutUrl; // Redirect to PesaPal checkout
+                } else {
+                    errorMsg.textContent = data.error || 'Payment initialization failed.';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (err) {
+                errorMsg.textContent = 'Network error. Please try again.';
+                errorMsg.style.display = 'block';
+            } finally {
+                loader.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>

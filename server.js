@@ -1,0 +1,109 @@
+import 'dotenv/config';
+import express from 'express';
+import axios from 'axios';
+import cors from 'cors';
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+app.use(express.static('public'));
+
+const {
+    PESAPAL_CONSUMER_KEY,
+    PESAPAL_CONSUMER_SECRET,
+    PESAPAL_NOTIFICATION_ID,
+    BASE_URL,
+    PORT = 3000
+} = process.env;
+
+const API_BASE = 'https://pay.pesapal.com/v3/api';
+
+// Get OAuth token
+async function getToken() {
+    const { data } = await axios.post(`${API_BASE}/Auth/RequestToken`, {
+        consumer_key: PESAPAL_CONSUMER_KEY,
+        consumer_secret: PESAPAL_CONSUMER_SECRET
+    });
+    return data.token;
+}
+
+// Create PesaPal order
+app.post('/create-order', async (req, res) => {
+    try {
+        const { phone, name } = req.body;
+        if (!phone || !name) {
+            return res.status(400).json({ error: 'Missing phone or name' });
+        }
+
+        const token = await getToken();
+
+        const order = {
+            id: `${Date.now()}`, // your unique order id
+            currency: 'KES',
+            amount: 100,
+            description: 'WhatsApp Bot Deployment',
+            callback_url: `${BASE_URL}/payment-callback`,
+            notification_id: PESAPAL_NOTIFICATION_ID,
+            billing_address: {
+                phone_number: phone,
+                email_address: '',
+                country_code: 'KE',
+                first_name: name,
+                last_name: '',
+                line_1: 'WhatsApp Bot'
+            }
+        };
+
+        const { data } = await axios.post(
+            `${API_BASE}/Transactions/SubmitOrderRequest`,
+            order,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        // redirect_url comes from PesaPal to complete payment
+        res.json({ checkoutUrl: data.redirect_url, orderTrackingId: data.order_tracking_id });
+    } catch (err) {
+        console.error('Create order error:', err.response?.data || err.message);
+        res.status(500).json({ error: 'Payment init failed' });
+    }
+});
+
+// Callback endpoint for PesaPal (payment result)
+app.get('/payment-callback', async (req, res) => {
+    // PesaPal will send query params like OrderTrackingId, MerchantReference, etc.
+    const { OrderTrackingId } = req.query;
+    if (!OrderTrackingId) {
+        return res.status(400).send('Missing OrderTrackingId');
+    }
+
+    try {
+        const token = await getToken();
+
+        // Check payment status
+        const { data } = await axios.get(
+            `${API_BASE}/Transactions/GetTransactionStatus?orderTrackingId=${encodeURIComponent(OrderTrackingId)}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        // You can persist data.status_code / data.payment_status / data.amount etc. in your DB here
+        // Show a simple result page
+        return res.send(`
+      <html>
+        <head><title>Payment Status</title></head>
+        <body style="font-family: Inter, sans-serif; background:#111; color:#fff; padding:40px;">
+          <h2>Payment Status</h2>
+          <p><strong>OrderTrackingId:</strong> ${OrderTrackingId}</p>
+          <p><strong>Status:</strong> ${data.payment_status}</p>
+          <p><strong>Amount:</strong> KES ${data.amount}</p>
+          <p><strong>Reference:</strong> ${data.merchant_reference}</p>
+          <a href="/" style="color:#9C27B0;">Back to Home</a>
+        </body>
+      </html>
+    `);
+    } catch (err) {
+        console.error('Status error:', err.response?.data || err.message);
+        return res.status(500).send('Could not verify payment.');
+    }
+});
+
+app.listen(PORT, () => console.log(`Server running on ${BASE_URL}`));
